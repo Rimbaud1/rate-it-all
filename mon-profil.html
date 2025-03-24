@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rate It All - Mon Profil</title>
+  <style>
+    /* ----------- RESET / BASE (même que la page d'accueil) ----------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #ffffff;
+      color: #333;
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    ul {
+      list-style: none;
+    }
+
+    /* ----------- ANIMATIONS ----------- */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* ----------- HEADER & NAVBAR (identique) ----------- */
+    header {
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #5a5a5a;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+    }
+    .logo:hover {
+      color: #ff7f50;
+    }
+    .nav-links li {
+      display: inline-block;
+      margin-left: 1.5rem;
+    }
+    .nav-links a {
+      font-weight: 500;
+      color: #555;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: #ff7f50;
+    }
+
+    /* ----------- HERO SECTION (plus simple) ----------- */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+      padding: 2.5rem 1.5rem 4rem 1.5rem; 
+      text-align: center;
+      color: #fff;
+    }
+    .hero-content {
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeInUp 1.2s ease forwards;
+    }
+    .hero h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    /* Wave shape at bottom of hero */
+    .hero-wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+    }
+    .hero-wave svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ----------- MAIN CONTENT ----------- */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    /* ----------- PROFILE SECTION ----------- */
+    .profile-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0; /* Start hidden for fadeInUp */
+    }
+    .profile-photo {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .profile-name {
+      font-size: 1.8rem;
+      color: #ff7f50;
+      font-weight: 700;
+    }
+    .profile-details {
+      color: #555;
+      font-size: 1rem;
+    }
+    .profile-description {
+      max-width: 600px;
+      margin-top: 1rem;
+      line-height: 1.5;
+      color: #444;
+    }
+
+    /* ----------- PROFILE STATS (nombre de notes, classement, etc.) ----------- */
+    .profile-stats {
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+    .stat-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      text-align: center;
+      min-width: 120px;
+    }
+    .stat-box h3 {
+      color: #ff7f50;
+      font-size: 1.6rem;
+      margin-bottom: 0.3rem;
+    }
+    .stat-box p {
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    /* ----------- RECENT COMMENTS SECTION ----------- */
+    .comments-section {
+      margin-top: 2rem;
+    }
+    .section-title {
+      font-size: 1.8rem;
+      margin: 2rem 0 1.5rem 0;
+      text-align: center;
+      letter-spacing: 1px;
+      color: #444;
+      text-transform: uppercase;
+    }
+    .comment-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .comment-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      padding: 1.2rem 1.5rem;
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0; /* for fadeInUp start */
+    }
+    .comment-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+    }
+    .comment-title {
+      font-size: 1rem;
+      color: #ff7f50;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+    .comment-rating {
+      font-size: 1rem;
+      color: #f4b400;
+      margin-bottom: 0.6rem;
+    }
+    .comment-rating span {
+      font-size: 1.15rem;
+      margin-right: 1px;
+      vertical-align: middle;
+    }
+    .comment-text {
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-bottom: 0.8rem;
+    }
+    .comment-meta {
+      text-align: right;
+      font-size: 0.85rem;
+      color: #777;
+      font-style: italic;
+    }
+
+    /* ----------- FOOTER ----------- */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #777;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+      margin-top: 2rem;
+    }
+
+    /* ----------- RESPONSIVE ----------- */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none; /* ou burger menu dans un vrai cas */
+      }
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+      .comment-list {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER & NAVBAR -->
+  <header>
+    <div class="navbar">
+      <div class="logo">Rate It All</div>
+      <ul class="nav-links">
+        <li><a href="#">Accueil</a></li>
+        <li><a href="#">Top Avis</a></li>
+        <li><a href="#">Nouveautés</a></li>
+        <li><a href="#">Mon Profil</a></li>
+        <li><a href="#">Connexion</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- HERO (courte) -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Mon Profil</h1>
+      <p>Bienvenue sur votre espace personnel !</p>
+    </div>
+    <div class="hero-wave">
+      <!-- Wave SVG -->
+      <svg viewBox="0 0 500 80" preserveAspectRatio="none">
+        <path d="M0,30 C150,80 350,0 500,45 L500,0 L0,0 Z" style="fill:#ffffff;"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- PROFILE SECTION -->
+    <section class="profile-section">
+      <div class="profile-photo">
+        <!-- Remplace l’URL si tu as une photo -->
+        <img src="./singe.jpg" alt="Photo de profil">
+      </div>
+      <h2 class="profile-name">John Doe</h2>
+      <p class="profile-details">Âge : 24 ans</p>
+      <p class="profile-description">
+        Passionné de tech, de cuisine et toujours à la recherche 
+        de nouvelles expériences à partager. J’adore explorer 
+        de nouveaux restaurants et tester des gadgets innovants !
+      </p>
+
+      <!-- STATS -->
+      <div class="profile-stats">
+        <div class="stat-box">
+          <h3>152</h3>
+          <p>Notes données</p>
+        </div>
+        <div class="stat-box">
+          <h3>#8</h3>
+          <p>Top Rater</p>
+        </div>
+        <div class="stat-box">
+          <h3>36</h3>
+          <p>Commentaires</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMENTS SECTION (récents) -->
+    <section class="comments-section">
+      <h2 class="section-title">Mes commentaires récents</h2>
+      <div class="comment-list">
+        <!-- 1er commentaire -->
+        <div class="comment-card">
+          <h3 class="comment-title">Film "Euphoria in Space"</h3>
+          <div class="comment-rating">
+            <span>★★★★☆</span>4/5
+          </div>
+          <p class="comment-text">
+            Visuellement bluffant et un scénario vraiment captivant, 
+            je recommande à tous ceux qui aiment la SF immersive.
+          </p>
+          <div class="comment-meta">
+            Publié le 12/03/2025
+          </div>
+        </div>
+        <!-- 2ème commentaire -->
+        <div class="comment-card">
+          <h3 class="comment-title">Restaurant "La Table Zen"</h3>
+          <div class="comment-rating">
+            <span>★★★★☆</span>4.2/5
+          </div>
+          <p class="comment-text">
+            Ambiance zen et plats équilibrés. 
+            J’y vais souvent pour décompresser après le boulot.
+          </p>
+          <div class="comment-meta">
+            Publié le 10/03/2025
+          </div>
+        </div>
+        <!-- 3ème commentaire -->
+        <div class="comment-card">
+          <h3 class="comment-title">App "Focus Now"</h3>
+          <div class="comment-rating">
+            <span>★★★☆☆</span>3.8/5
+          </div>
+          <p class="comment-text">
+            Bonne idée pour rester concentré, 
+            mais parfois quelques bugs m’ont frustré.
+          </p>
+          <div class="comment-meta">
+            Publié le 08/03/2025
+          </div>
+        </div>
+        <!-- 4ème commentaire -->
+        <div class="comment-card">
+          <h3 class="comment-title">Casque Audio ToneFlex</h3>
+          <div class="comment-rating">
+            <span>★★★★☆</span>4.5/5
+          </div>
+          <p class="comment-text">
+            Confortable et un son clair. 
+            Un must-have pour les audiophiles en déplacement.
+          </p>
+          <div class="comment-meta">
+            Publié le 05/03/2025
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Rate It All. Tous droits réservés.</p>
+    <p>Site fictif réalisé pour démonstration de style et de mise en page.</p>
+  </footer>
+
+</body>
+</html>

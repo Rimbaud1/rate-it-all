@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rate It All - Top Avis</title>
+  <style>
+    /* ----------- RESET / BASE ----------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #ffffff;
+      color: #333;
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    ul {
+      list-style: none;
+    }
+
+    /* ----------- ANIMATIONS ----------- */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* ----------- HEADER & NAVBAR ----------- */
+    header {
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #5a5a5a;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+    }
+    .logo:hover {
+      color: #ff7f50;
+    }
+    .nav-links li {
+      display: inline-block;
+      margin-left: 1.5rem;
+    }
+    .nav-links a {
+      font-weight: 500;
+      color: #555;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: #ff7f50;
+    }
+
+    /* ----------- HERO SECTION (Simple) ----------- */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+      padding: 2.5rem 1.5rem 4rem 1.5rem; /* un peu plus court que la home */
+      text-align: center;
+      color: #fff;
+    }
+    .hero-content {
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeInUp 1.2s ease forwards;
+    }
+    .hero h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    /* Wave shape at bottom of hero */
+    .hero-wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+    }
+    .hero-wave svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ----------- MAIN CONTENT ----------- */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      animation: fadeIn 1s ease forwards;
+    }
+    .section-title {
+      font-size: 1.8rem;
+      margin: 2rem 0 1.5rem 0;
+      text-align: center;
+      letter-spacing: 1px;
+      color: #444;
+      text-transform: uppercase;
+    }
+
+    /* ITEM LIST + CARDS (identique à la home) */
+    .item-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .item {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0; /* Start hidden for fadeInUp */
+    }
+    .item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+    }
+    .item h3 {
+      margin-bottom: 0.6rem;
+      color: #ff7f50;
+      font-size: 1.2rem;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    .rating {
+      margin-bottom: 0.6rem;
+      font-size: 1rem;
+      color: #f4b400;
+    }
+    .rating span {
+      font-size: 1.15rem;
+      margin-right: 1px;
+      vertical-align: middle;
+    }
+    .item p {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    /* Buttons inside the item */
+    .item-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .btn-action {
+      display: inline-block;
+      padding: 0.55rem 1.2rem;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      border: none;
+      color: #fff; /* on met tout en blanc sur fond coloré */
+    }
+    .btn-action.like {
+      background-color: #ff7f50;
+    }
+    .btn-action.like:hover {
+      background-color: #ff6240;
+      transform: translateY(-2px);
+    }
+    .btn-action.share {
+      background-color: #4caf50;
+    }
+    .btn-action.share:hover {
+      background-color: #43a047;
+      transform: translateY(-2px);
+    }
+
+    /* WAVE BOTTOM */
+    .bottom-wave {
+      position: relative;
+      height: 80px;
+      margin-top: 2rem;
+    }
+    .bottom-wave svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* FOOTER (identique) */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #777;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+      margin-top: 2rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none; /* ou burger menu dans un vrai cas */
+      }
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER & NAVBAR -->
+  <header>
+    <div class="navbar">
+      <div class="logo">Rate It All</div>
+      <ul class="nav-links">
+        <li><a href="#">Accueil</a></li>
+        <li><a href="#">Top Avis</a></li>
+        <li><a href="#">Nouveautés</a></li>
+        <li><a href="#">Mon Profil</a></li>
+        <li><a href="#">Connexion</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Les Meilleurs Avis</h1>
+      <p>
+        Découvrez les contenus les plus appréciés par la communauté, 
+        et explorez des avis variés sur des sujets inattendus !
+      </p>
+    </div>
+    <div class="hero-wave">
+      <!-- Wave SVG -->
+      <svg viewBox="0 0 500 80" preserveAspectRatio="none">
+        <path d="M0,30 C150,80 350,0 500,45 L500,00 L0,0 Z" 
+          style="fill:#ffffff;"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- SECTION : Avis Les Plus Likés -->
+    <section class="top-liked">
+      <h2 class="section-title">Les plus likés</h2>
+      <div class="item-list">
+        <!-- Exemple d'avis 1 -->
+        <div class="item">
+          <h3>Jeu "Galactic Explorers"</h3>
+          <div class="rating">
+            <span>★★★★★</span>4.8/5
+          </div>
+          <p>
+            Un jeu d'exploration spatiale fascinant, où vos décisions 
+            influent sur l'avenir de la galaxie.
+          </p>
+          <div class="item-buttons">
+            <button class="btn-action like">Like (253)</button>
+            <button class="btn-action share"
+                    onclick="alert('rate-it-all.com/avis.php?id=G001');">
+              Partager
+            </button>
+          </div>
+        </div>
+        <!-- Exemple d'avis 2 -->
+        <div class="item">
+          <h3>Documentaire "Deep Seas"</h3>
+          <div class="rating">
+            <span>★★★★★</span>4.9/5
+          </div>
+          <p>
+            Des images sublimes des fonds marins 
+            et un discours engagé pour la préservation 
+            des océans.
+          </p>
+          <div class="item-buttons">
+            <button class="btn-action like">Like (198)</button>
+            <button class="btn-action share"
+                    onclick="alert('rate-it-all.com/avis.php?id=D045');">
+              Partager
+            </button>
+          </div>
+        </div>
+        <!-- Exemple d'avis 3 -->
+        <div class="item">
+          <h3>Restaurant "Le 5ème Goût"</h3>
+          <div class="rating">
+            <span>★★★★☆</span>4.5/5
+          </div>
+          <p>
+            Une alliance surprenante de saveurs umami, 
+            et un cadre raffiné pour un dîner inoubliable.
+          </p>
+          <div class="item-buttons">
+            <button class="btn-action like">Like (184)</button>
+            <button class="btn-action share"
+                    onclick="alert('rate-it-all.com/avis.php?id=R312');">
+              Partager
+            </button>
+          </div>
+        </div>
+        <!-- Exemple d'avis 4 -->
+        <div class="item">
+          <h3>Livre "Les Chroniques de l'Aube"</h3>
+          <div class="rating">
+            <span>★★★★★</span>4.7/5
+          </div>
+          <p>
+            Un univers de fantasy captivant 
+            où dragons, magie et héros se mêlent 
+            dans une saga épique.
+          </p>
+          <div class="item-buttons">
+            <button class="btn-action like">Like (179)</button>
+            <button class="btn-action share"
+                    onclick="alert('rate-it-all.com/avis.php?id=L657');">
+              Partager
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION : Avis Aléatoires -->
+    <section class="random-avis">
+      <h2 class="section-title">Avis aléatoires</h2>
+      <div class="item-list">
+        <!-- Avis A1 -->
+        <div class="item">
+          <h3>Théâtre "Le Misanthrope"</h3>
+          <div class="rating">
+            <span>★★★★☆</span>4.1/5
+          </div>
+          <p>
+            Une performance classique, mais toujours aussi piquante. 
+            Les acteurs y sont exceptionnels.
+          </p>
+          <div class="item-buttons">
+            <button class="btn-action like">Like (42)</button>
+            <button class="btn-action share"
+                    onclick="alert('rate-it-all.com/avis.php?id=T002');">
+              Partager
+            </button>
+          </div>
+        </div>
+        <!-- Avis A2 -->
+        <div class="item">
+          <h3>Bootcamp "Code4Life"</h3>
+          <div class="rating">
+            <span>★★★★☆</span>4.3/5
+          </div>
+          <p>
+            Programme intensif de développement web, 
+            idéal pour ceux qui veulent changer de carrière rapidement.
+          </p>
+          <div class="item-buttons">
+            <button class="btn-action like">Like (29)</button>
+            <button class="btn-action share"
+                    onclick="alert('rate-it-all.com/avis.php?id=B987');">
+              Partager
+            </button>
+          </div>
+        </div>
+        <!-- Avis A3 -->
+        <div class="item">
+          <h3>Snack "Pizza Pocket Deluxe"</h3>
+          <div class="rating">
+            <span>★★★☆☆</span>3.7/5
+          </div>
+          <p>
+            Pratique, mais bourratif. 
+            À consommer de préférence en fin de soirée (ou de nuit).
+          </p>
+          <div class="item-buttons">
+            <button class="btn-action like">Like (12)</button>
+            <button class="btn-action share"
+                    onclick="alert('rate-it-all.com/avis.php?id=S123');">
+              Partager
+            </button>
+          </div>
+        </div>
+        <!-- Avis A4 -->
+        <div class="item">
+          <h3>Cour "Zumba Aquatique"</h3>
+          <div class="rating">
+            <span>★★★☆☆</span>3.9/5
+          </div>
+          <p>
+            Sport original et ludique pour se dépenser. 
+            Préparez-vous à être éclaboussé !
+          </p>
+          <div class="item-buttons">
+            <button class="btn-action like">Like (18)</button>
+            <button class="btn-action share"
+                    onclick="alert('rate-it-all.com/avis.php?id=C619');">
+              Partager
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- WAVE BOTTOM -->
+  <div class="bottom-wave">
+    <svg viewBox="0 0 500 80" preserveAspectRatio="none">
+      <!-- on remplace fill:#ffffff par fill:#f2f2f2 par exemple -->
+      <path d="M0,30 C150,80 350,0 500,50 L500,80 L0,80 Z" style="fill:#f2f2f2;"></path>
+    </svg>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Rate It All. Tous droits réservés.</p>
+    <p>Site fictif réalisé pour démonstration de style et de mise en page.</p>
+  </footer>
+
+</body>
+</html>
