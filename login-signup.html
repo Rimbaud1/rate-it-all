@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rate It All - Connexion & Inscription</title>
+  <style>
+    /* ----------- RESET / BASE ----------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    html, body {
+      height: 100%;
+    }
+    body {
+      /* Arrière-plan en dégradé (couleurs du projet) */
+      background: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* On utilise des inputs radio pour switcher d'un onglet à l'autre, donc on les masque */
+    input[type="radio"] {
+      display: none;
+    }
+
+    /* ----------- CONTAINER PRINCIPAL ----------- */
+    .module-container {
+      background: #fff;
+      width: 600px;
+      max-width: 90%;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      padding: 2.5rem 2rem;
+      position: relative;
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0; /* Pour l'animation */
+    }
+
+    /* Animation “fadeInUp”, comme sur la page d’accueil */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ----------- ENTÊTE DU MODULE : NOM DU SITE ----------- */
+    .brand-title {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ff7f50;
+      margin-bottom: 1rem;
+    }
+
+    /* ----------- ONGLETS (TABS) ----------- */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 1.5rem;
+    }
+    .tab-label {
+      cursor: pointer;
+      font-weight: 600;
+      color: #666;
+      padding: 0.8rem 1.2rem;
+      text-align: center;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .tab-label:hover {
+      color: #ff7f50;
+    }
+    /* Barre colorée sous l'onglet actif */
+    .tab-label::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0%;
+      height: 2px;
+      background-color: #ff7f50;
+      transition: width 0.3s ease;
+    }
+
+    /* Si l'input radio #tab-login est coché, on surligne l'onglet correspondant */
+    #tab-login:checked ~ .tabs label[for="tab-login"]::after {
+      width: 100%;
+    }
+    /* Idem pour l’onglet S’inscrire */
+    #tab-signup:checked ~ .tabs label[for="tab-signup"]::after {
+      width: 100%;
+    }
+
+    /* ----------- CONTENU DES FORMULAIRES ----------- */
+    .forms-wrapper {
+      position: relative;
+      /* on laisse la place aux 2 formulaires dans ce wrapper */
+      min-height: 250px;
+    }
+    .form-content {
+      display: none;
+      animation: fadeInUp 0.5s ease forwards;
+      opacity: 0;
+    }
+    /* Quand l’onglet Connexion est actif, on affiche .login-content */
+    #tab-login:checked ~ .forms-wrapper .login-content {
+      display: block;
+      opacity: 1;
+    }
+    /* Quand l’onglet Inscription est actif, on affiche .signup-content */
+    #tab-signup:checked ~ .forms-wrapper .signup-content {
+      display: block;
+      opacity: 1;
+    }
+
+    /* ----------- STYLES DE FORMULAIRE ----------- */
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* centre horizontalement */
+      gap: 1rem;
+    }
+    .form-group {
+      width: 80%; /* champs plus larges pour un look épuré */
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 0.3rem;
+    }
+    .form-group input {
+      padding: 0.65rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: border 0.3s ease, box-shadow 0.3s ease;
+      outline: none;
+    }
+    .form-group input:focus {
+      border-color: #ff7f50;
+      box-shadow: 0 0 4px rgba(255,127,80,0.3);
+    }
+
+    /* Bouton principal */
+    .btn-submit {
+      background-color: #ff7f50;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      padding: 0.7rem 1.4rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      margin-top: 0.2rem;
+    }
+    .btn-submit:hover {
+      background-color: #ff6240;
+      transform: translateY(-2px);
+    }
+
+    /* Bouton Google (optionnel) */
+    .google-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #fff;
+      color: #555;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      padding: 0.65rem 1.2rem;
+      font-weight: 500;
+      transition: box-shadow 0.3s ease;
+      margin-top: 0.5rem;
+    }
+    .google-btn:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .google-icon {
+      width: 20px;
+      height: 20px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png')
+        center/cover no-repeat;
+    }
+
+    /* Pied du formulaire : liens vers l'autre onglet */
+    .form-footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #777;
+      margin-top: 0.5rem;
+    }
+    .form-footer label {
+      color: #9a5cc0; /* ou #f68084, #ff7f50, selon ta préférence */
+      margin-left: 0.2rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .form-footer label:hover {
+      color: #f68084;
+    }
+
+    /* ----------- RESPONSIVE ----------- */
+    @media (max-width: 480px) {
+      .module-container {
+        padding: 1.5rem 1rem;
+        width: 100%;
+        margin: 0 1rem;
+      }
+      .brand-title {
+        font-size: 1.4rem;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="module-container">
+    <!-- Titre du site en haut -->
+    <div class="brand-title">Rate It All</div>
+
+    <!-- Les 2 inputs radio pour gérer l'onglet sélectionné -->
+    <input type="radio" name="tabs" id="tab-login" checked>
+    <input type="radio" name="tabs" id="tab-signup">
+
+    <!-- Barre d'onglets -->
+    <div class="tabs">
+      <label for="tab-login" class="tab-label">Se connecter</label>
+      <label for="tab-signup" class="tab-label">S'inscrire</label>
+    </div>
+
+    <!-- Wrapper qui contient les deux formulaires -->
+    <div class="forms-wrapper">
+      <!-- Formulaire Connexion -->
+      <div class="form-content login-content">
+        <form action="#" method="POST">
+          <div class="form-group">
+            <label for="email-login">Email</label>
+            <input type="email" id="email-login" name="email-login" placeholder="exemple@domaine.com" required>
+          </div>
+          <div class="form-group">
+            <label for="password-login">Mot de passe</label>
+            <input type="password" id="password-login" name="password-login" placeholder="********" required>
+          </div>
+          <button class="btn-submit" type="submit">Se connecter</button>
+
+          <!-- Bouton Google (optionnel) -->
+          <button class="google-btn" type="button">
+            <div class="google-icon"></div>
+            Continuer avec Google
+          </button>
+
+          <div class="form-footer">
+            <span>Vous n'avez pas de compte ?</span>
+            <label for="tab-signup">S'inscrire</label>
+          </div>
+        </form>
+      </div>
+
+      <!-- Formulaire Inscription -->
+      <div class="form-content signup-content">
+        <form action="#" method="POST">
+          <div class="form-group">
+            <label for="firstname">Prénom</label>
+            <input type="text" id="firstname" name="firstname" placeholder="Jean" required>
+          </div>
+          <div class="form-group">
+            <label for="lastname">Nom</label>
+            <input type="text" id="lastname" name="lastname" placeholder="Dupont" required>
+          </div>
+          <div class="form-group">
+            <label for="email-signup">Email</label>
+            <input type="email" id="email-signup" name="email-signup" placeholder="exemple@domaine.com" required>
+          </div>
+          <div class="form-group">
+            <label for="password-signup">Mot de passe</label>
+            <input type="password" id="password-signup" name="password-signup" placeholder="********" required>
+          </div>
+          <button class="btn-submit" type="submit">S'inscrire</button>
+
+          <button class="google-btn" type="button">
+            <div class="google-icon"></div>
+            Continuer avec Google
+          </button>
+
+          <div class="form-footer">
+            <span>Vous avez déjà un compte ?</span>
+            <label for="tab-login">Se connecter</label>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rate It All - Show (Frites Cordon Bleu du RU)</title>
+  <style>
+    /* ---------- RESET / BASE ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #ffffff;
+      color: #333;
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    ul {
+      list-style: none;
+    }
+
+    /* ---------- ANIMATIONS ---------- */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* ---------- HEADER & NAVBAR ---------- */
+    header {
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #5a5a5a;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+    }
+    .logo:hover {
+      color: #ff7f50;
+    }
+    .nav-links li {
+      display: inline-block;
+      margin-left: 1.5rem;
+    }
+    .nav-links a {
+      font-weight: 500;
+      color: #555;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: #ff7f50;
+    }
+
+    /* ---------- MAIN CONTENT ---------- */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    /* Titre du show */
+    .page-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #444;
+      font-weight: 700;
+    }
+    .page-subtitle {
+      text-align: center;
+      font-size: 1rem;
+      color: #777;
+      margin-bottom: 2rem;
+    }
+
+    /* ---------- ITEM SECTION ---------- */
+    .item-show {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0; /* pour l'animation fadeInUp */
+    }
+    .item-image {
+      width: 100%;
+      max-width: 500px;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+    .item-image img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .item-description {
+      text-align: center;
+      max-width: 800px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    /* ITEM STATS (moyenne, nb notes, classement) */
+    .item-stats {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    .stat-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      text-align: center;
+      min-width: 120px;
+    }
+    .stat-box h3 {
+      color: #ff7f50;
+      font-size: 1.6rem;
+      margin-bottom: 0.3rem;
+    }
+    .stat-box p {
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    /* ---------- COMMENTS SECTION ---------- */
+    .comments-section {
+      margin-top: 2rem;
+    }
+    .section-title {
+      font-size: 1.8rem;
+      margin: 2rem 0 1.5rem 0;
+      text-align: center;
+      letter-spacing: 1px;
+      color: #444;
+      text-transform: uppercase;
+    }
+    .comment-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .comment-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      padding: 1rem 1.2rem;
+    }
+    .comment-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .comment-author {
+      font-weight: 600;
+      color: #333;
+    }
+    .comment-rating {
+      color: #f4b400; /* étoiles dorées */
+    }
+    .comment-rating span {
+      margin-right: 1px;
+      font-size: 1rem;
+      vertical-align: middle;
+    }
+    .comment-body {
+      font-size: 0.95rem;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    /* ---------- RATING FORM ---------- */
+    .rating-form {
+      margin-top: 3rem;
+      background: #fafafa;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      padding: 1.5rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0;
+    }
+    .rating-form h3 {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #ff7f50;
+      margin-bottom: 1rem;
+    }
+    .rating-form form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-row label {
+      font-size: 0.95rem;
+      color: #555;
+      min-width: 70px;
+    }
+    .form-row input[type="number"] {
+      width: 80px;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+    .form-row textarea {
+      flex: 1 1 100%;
+      padding: 0.7rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      min-height: 80px;
+      resize: vertical;
+    }
+    .rating-form button[type="submit"] {
+      align-self: center;
+      padding: 0.6rem 1.4rem;
+      border: none;
+      border-radius: 25px;
+      background-color: #ff7f50;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .rating-form button[type="submit"]:hover {
+      background-color: #ff6240;
+      transform: translateY(-2px);
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #777;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+      margin-top: 3rem;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none; /* si besoin burger menu */
+      }
+      .page-title {
+        font-size: 1.6rem;
+      }
+      .comment-list {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER & NAVBAR -->
+  <header>
+    <div class="navbar">
+      <div class="logo">Rate It All</div>
+      <ul class="nav-links">
+        <li><a href="#">Accueil</a></li>
+        <li><a href="#">Top Avis</a></li>
+        <li><a href="#">Nouveautés</a></li>
+        <li><a href="#">Mon Profil</a></li>
+        <li><a href="#">Connexion</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- Titre principal de la page (nom du "truc noté") -->
+    <h1 class="page-title">Les Frites Cordon Bleu du RU</h1>
+    <p class="page-subtitle">Découvrez les avis et donnez votre note</p>
+
+    <!-- ITEM SECTION -->
+    <section class="item-show">
+      <!-- Image du truc noté -->
+      <div class="item-image">
+        <!-- remplace par l'image que tu veux, par ex. "frites-cordon-bleu.jpg" -->
+        <img src="./frites-cordonbleu.jpg" 
+             alt="Frites Cordon Bleu du RU">
+      </div>
+      <!-- Description rapide -->
+      <div class="item-description">
+        <p>
+          Un plat unique qui mélange la croustillance des frites et la gourmandise 
+          du cordon bleu, le tout servi au restaurant universitaire. Plutôt original 
+          et généreux, mais qu'en pense la communauté ?
+        </p>
+      </div>
+
+      <!-- STATS: moyenne, nb notes, classement -->
+      <div class="item-stats">
+        <div class="stat-box">
+          <h3>4.1/5</h3>
+          <p>Moyenne des notes</p>
+        </div>
+        <div class="stat-box">
+          <h3>328</h3>
+          <p>Notes reçues</p>
+        </div>
+        <div class="stat-box">
+          <h3>#12</h3>
+          <p>Classement global</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMENTS SECTION -->
+    <section class="comments-section">
+      <h2 class="section-title">Commentaires Récents</h2>
+      <div class="comment-list">
+        <!-- Comment 1 -->
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-author">Alice</span>
+            <div class="comment-rating">
+              <span>★★★★☆</span>4/5
+            </div>
+          </div>
+          <div class="comment-body">
+            J'ai été agréablement surprise ! Les frites sont bien dorées 
+            et la sauce du cordon bleu est top. Juste un peu trop salé pour moi.
+          </div>
+        </div>
+        <!-- Comment 2 -->
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-author">Nico</span>
+            <div class="comment-rating">
+              <span>★★★☆☆</span>3/5
+            </div>
+          </div>
+          <div class="comment-body">
+            Bof, c'est sympa quand on a faim, mais ça reste de la cantine.
+            Rien d'extraordinaire, je préfère la version poulet grillé.
+          </div>
+        </div>
+        <!-- Comment 3 -->
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-author">Fatou</span>
+            <div class="comment-rating">
+              <span>★★★★☆</span>4/5
+            </div>
+          </div>
+          <div class="comment-body">
+            A tester au moins une fois ! L'idée est rigolote, c'est bon pour un RU 
+            et ça cale bien après les cours.
+          </div>
+        </div>
+        <!-- Comment 4 -->
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-author">Pauline</span>
+            <div class="comment-rating">
+              <span>★★★★★</span>5/5
+            </div>
+          </div>
+          <div class="comment-body">
+            Mon coup de cœur du RU ! J'adore, surtout avec la sauce fromagère 
+            en plus. Une super découverte.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RATING FORM -->
+    <section class="rating-form">
+      <h3>Donner Votre Note</h3>
+      <form action="#" method="POST">
+        <div class="form-row">
+          <label for="rating">Note (1 à 5) :</label>
+          <input type="number" id="rating" name="rating" min="1" max="5" value="5" required>
+        </div>
+        <div class="form-row">
+          <label for="comment">Commentaire :</label>
+          <textarea id="comment" name="comment" placeholder="Votre avis..." required></textarea>
+        </div>
+        <button type="submit">Envoyer</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Rate It All. Tous droits réservés.</p>
+    <p>Site fictif réalisé pour démonstration de style et de mise en page.</p>
+  </footer>
+
+</body>
+</html>
