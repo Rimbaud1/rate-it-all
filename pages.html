@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rate It All - Tous les liens</title>
+  <style>
+    /* ----------- RESET / BASE ----------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #ffffff;
+      color: #333;
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    ul {
+      list-style: none;
+    }
+
+    /* ----------- ANIMATIONS ----------- */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ----------- HEADER (OPTIONNEL) ----------- */
+    header {
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      padding: 1rem 1.5rem;
+      text-align: center;
+    }
+    .header-title {
+      font-size: 1.6rem;
+      color: #5a5a5a;
+      letter-spacing: 1px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    /* ----------- HERO SECTION ----------- */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+      padding: 2.5rem 1.5rem 4rem 1.5rem;
+      text-align: center;
+      color: #fff;
+    }
+    .hero-content {
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeInUp 1.2s ease forwards;
+    }
+    .hero h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    /* WAVE BOTTOM (optionnel) */
+    .hero-wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+    }
+    .hero-wave svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ----------- MAIN CONTENT ----------- */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      font-size: 1.8rem;
+      margin: 2rem 0 1.5rem 0;
+      text-align: center;
+      letter-spacing: 1px;
+      color: #444;
+      text-transform: uppercase;
+    }
+
+    /* ----------- LINK CARDS (GRID) ----------- */
+    .link-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .link-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.2rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0; /* Start hidden for fadeInUp */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .link-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+    }
+    .link-title {
+      font-size: 1rem;
+      color: #ff7f50;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .link-desc {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+    .btn-link {
+      display: inline-block;
+      background-color: #ff7f50;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
+      border: none;
+      text-align: center;
+      cursor: pointer;
+    }
+    .btn-link:hover {
+      background-color: #ff6240;
+      transform: translateY(-2px);
+    }
+
+    /* ----------- FOOTER ----------- */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #777;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+      margin-top: 2rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .hero h1 {
+        font-size: 1.6rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+      .section-title {
+        font-size: 1.4rem;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER (optionnel) -->
+  <header>
+    <div class="header-title">Rate It All - Toutes les Pages</div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Liste de Liens</h1>
+      <p>Page temporaire pour accéder rapidement à l’ensemble des fichiers du projet.</p>
+    </div>
+    <div class="hero-wave">
+      <svg viewBox="0 0 500 80" preserveAspectRatio="none">
+        <path d="M0,30 C150,80 350,0 500,45 L500,0 L0,0 Z" style="fill:#ffffff;"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <h2 class="section-title">Toutes les Pages & Ressources</h2>
+    <div class="link-grid">
+      <!-- 1) index.html -->
+      <div class="link-card">
+        <div class="link-title">index.html</div>
+        <div class="link-desc">
+          Page d’accueil épurée et moderne.
+        </div>
+        <a class="btn-link" href="index.html" target="_blank">Ouvrir</a>
+      </div>
+      <!-- 2) login-signup.html -->
+      <div class="link-card">
+        <div class="link-title">login-signup.html</div>
+        <div class="link-desc">
+          Connexion / Inscription (style animé en pur HTML/CSS).
+        </div>
+        <a class="btn-link" href="login-signup.html" target="_blank">Ouvrir</a>
+      </div>
+      <!-- 3) mon-profil.html -->
+      <div class="link-card">
+        <div class="link-title">mon-profil.html</div>
+        <div class="link-desc">
+          Page de profil utilisateur (photo, stats, commentaires).
+        </div>
+        <a class="btn-link" href="mon-profil.html" target="_blank">Ouvrir</a>
+      </div>
+      <!-- 4) show.html -->
+      <div class="link-card">
+        <div class="link-title">show.html</div>
+        <div class="link-desc">
+          Affiche les détails d'un "truc noté" (ex: Frites Cordon Bleu).
+        </div>
+        <a class="btn-link" href="show.html" target="_blank">Ouvrir</a>
+      </div>
+      <!-- 5) admin.html -->
+      <div class="link-card">
+        <div class="link-title">admin.html</div>
+        <div class="link-desc">
+          Tableau de bord pour l'administration du site (gestion items, etc).
+        </div>
+        <a class="btn-link" href="admin.html" target="_blank">Ouvrir</a>
+      </div>
+      <!-- 6) admin-userview.html -->
+      <div class="link-card">
+        <div class="link-title">admin-userview.html</div>
+        <div class="link-desc">
+          Détails d’un utilisateur côté admin (ID, stats, activité).
+        </div>
+        <a class="btn-link" href="admin-userview.html" target="_blank">Ouvrir</a>
+      </div>
+      <!-- 7) comments.html (fictif) -->
+      <div class="link-card">
+        <div class="link-title">comments.html</div>
+        <div class="link-desc">
+          Page fictive pour gérer / lister tous les commentaires du site.
+        </div>
+        <a class="btn-link" href="comments.html" target="_blank">Ouvrir</a>
+      </div>
+      <!-- 8) frites-cordonbleu.jpg -->
+      <div class="link-card">
+        <div class="link-title">frites-cordonbleu.jpg</div>
+        <div class="link-desc">
+          Image utilisée dans show.html.
+        </div>
+        <a class="btn-link" href="frites-cordonbleu.jpg" target="_blank">Voir Image</a>
+      </div>
+      <!-- 9) singe.jpg -->
+      <div class="link-card">
+        <div class="link-title">singe.jpg</div>
+        <div class="link-desc">
+          Autre image de test.
+        </div>
+        <a class="btn-link" href="singe.jpg" target="_blank">Voir Image</a>
+      </div>
+      <!-- 10) images.jpeg -->
+      <div class="link-card">
+        <div class="link-title">images.jpeg</div>
+        <div class="link-desc">
+          Image d'illustration (placeholder).
+        </div>
+        <a class="btn-link" href="images.jpeg" target="_blank">Voir Image</a>
+      </div>
+      <!-- 11) README.md -->
+      <div class="link-card">
+        <div class="link-title">README.md</div>
+        <div class="link-desc">
+          Documentation rapide du projet (texte brut).
+        </div>
+        <a class="btn-link" href="README.md" target="_blank">Lire</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Rate It All. Tous droits réservés.</p>
+    <p>Page temporaire de liens, uniquement pour la navigation interne.</p>
+  </footer>
+
+</body>
+</html>
