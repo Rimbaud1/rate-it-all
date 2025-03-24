@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Visualisation des Coefficients – CIR1 S2</title>
+  <!-- Google Charts -->
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <style>
+    /* ------------------------------
+       STYLE GLOBAL (sobre, épuré)
+    ------------------------------ */
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #fafafa;
+      color: #333;
+    }
+    h1, h2, h3 {
+      text-align: center;
+      margin: 1rem 0 0.5rem;
+      font-weight: 600;
+    }
+    h1 {
+      margin-top: 2rem;
+    }
+
+    /* Zone du graphique */
+    #chart_div {
+      width: 900px;
+      height: 600px;
+      background: #fff;
+      margin: 1rem auto;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding-top: 1rem;
+    }
+
+    /* Bouton de retour */
+    .button-container {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      background: #eee;
+      color: #333;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #ddd;
+    }
+
+    /* Personnalisation des camemberts */
+    /* (On jouera surtout avec les options JS ; 
+       ici on force juste un fond transparent pour l'intérieur) */
+  </style>
+</head>
+<body>
+
+<h1>Répartition des coefficients – CIR1 S2</h1>
+
+<div id="chart_div"></div>
+<div class="button-container">
+  <button id="backBtn" style="display: none;" onclick="goBack()">Retour</button>
+</div>
+
+<script>
+  // ------------------------------------------------------------------
+  // 1) Données – 3 niveaux
+  // ------------------------------------------------------------------
+
+  // CHARGEMENT DE GOOGLE CHARTS
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawLevel1);
+
+  // NIVEAU 1 : 5 UEs (en ECTS)
+  const dataNiveau1 = [
+    ['Maths (UE1.2.1)', 8],
+    ['Physique/Elec (UE1.2.2)', 7],
+    ['Informatique (UE1.2.3)', 7],
+    ['Hum.&Langues (UE1.2.4)', 6],
+    ['Projet (UE1.2.5)', 2],
+  ];
+
+  // NIVEAU 2 : sous-modules de chaque UE
+  const dataNiveau2 = [
+    {
+      name: 'Maths (UE1.2.1)',
+      modules: [
+        ['M3 : Arithmétique', 35],
+        ['M4 : Algèbre linéaire', 50],
+        ['Maths TP', 15]
+      ]
+    },
+    {
+      name: 'Physique/Elec (UE1.2.2)',
+      modules: [
+        ['Electronique TP', 20],
+        ['Mécanique du point', 50],
+        ['Thermodynamique', 30]
+      ]
+    },
+    {
+      name: 'Informatique (UE1.2.3)',
+      modules: [
+        ['Prog 2 Approfondissement', 50],
+        ['Prog 2 TP', 15],
+        ['Développement web', 35]
+      ]
+    },
+    {
+      name: 'Hum.&Langues (UE1.2.4)',
+      modules: [
+        ['Anglais', 50],
+        ['Epistémologie/EEO', 50]
+      ]
+    },
+    {
+      name: 'Projet (UE1.2.5)',
+      modules: [
+        ['Projet de fin d\'année', 100]
+      ]
+    }
+  ];
+
+  // NIVEAU 3 : répartition des épreuves
+  const dataNiveau3 = {
+    // --- MATHS ---
+    "M3 : Arithmétique": [
+      ["Partiel", 60],
+      ["CC1", 20],
+      ["CC2", 20]
+    ],
+    "M4 : Algèbre linéaire": [
+      ["Partiel", 60],
+      ["CC1", 10],
+      ["CC2", 10],
+      ["CC3", 10],
+      ["CC4", 10]
+    ],
+    "Maths TP": [
+      ["TP1", 33.33],
+      ["TP2", 33.33],
+      ["TP3", 33.33]
+    ],
+
+    // --- PHYSIQUE / ELEC ---
+    "Electronique TP": [
+      ["TP", 100]
+    ],
+    "Mécanique du point": [
+      ["Partiel", 60],
+      ["CC1", 30],
+      ["TP1", 10]
+    ],
+    "Thermodynamique": [
+      ["Partiel", 60],
+      ["CC1", 40]
+    ],
+
+    // --- INFORMATIQUE ---
+    "Prog 2 Approfondissement": [
+      ["DS", 30],
+      ["Partiel", 40],
+      ["CC1", 30]
+    ],
+    "Prog 2 TP": [
+      ["TP1", 100]
+    ],
+    "Développement web": [
+      ["DS", 40],
+      ["CC1", 20],
+      ["Projet", 40]
+    ],
+
+    // --- HUMANITÉS & LANGUES ---
+    "Anglais": [
+      ["Epreuve finale", 50],
+      ["CC1", 30],
+      ["TP1", 20]
+    ],
+    "Epistémologie/EEO": [
+      ["Partiel", 33.33],
+      ["CC1", 33.33],
+      ["CC2", 33.33]
+    ],
+
+    // --- PROJET ---
+    "Projet de fin d'année": [
+      ["Note projet", 100]
+    ]
+  };
+
+  // Suivi de l'état courant (niveau 1,2,3) + UE + sous-module
+  let currentLevel = 1;
+  let currentUEName = "";
+  let currentSubModule = "";
+
+  // ------------------------------------------------------------------
+  // 2) Fonctions de dessin
+  // ------------------------------------------------------------------
+  function drawLevel1() {
+    currentLevel = 1;
+    document.getElementById('backBtn').style.display = 'none';
+
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'UE');
+    data.addColumn('number', 'ECTS');
+    data.addRows(dataNiveau1);
+
+    const options = {
+      title: "Répartition des UE (en ECTS)",
+      pieHole: 0,
+      is3D: false,
+      backgroundColor: 'transparent',
+      chartArea: {
+        left: 50,
+        top: 60,
+        width: "80%",
+        height: "70%"
+      },
+      legend: { position: 'right' },
+      slices: {
+        0: { color: '#3366cc' },
+        1: { color: '#dc3912' },
+        2: { color: '#ff9900' },
+        3: { color: '#109618' },
+        4: { color: '#990099' }
+      }
+    };
+
+    const chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+    // Au clic sur un "secteur", on passe au niveau 2
+    google.visualization.events.addListener(chart, 'select', function() {
+      const selectedItem = chart.getSelection()[0];
+      if (selectedItem) {
+        const ueName = data.getValue(selectedItem.row, 0);
+        currentUEName = ueName;
+        drawLevel2(ueName);
+      }
+    });
+
+    chart.draw(data, options);
+  }
+
+  function drawLevel2(ueName) {
+    currentLevel = 2;
+    document.getElementById('backBtn').style.display = 'inline-block';
+
+    // Trouver l'objet correspondant
+    const ueObj = dataNiveau2.find(obj => obj.name === ueName);
+    if (!ueObj) return;
+
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'Module');
+    data.addColumn('number', 'Poids dans l\'UE');
+    data.addRows(ueObj.modules);
+
+    const options = {
+      title: ueName,
+      pieHole: 0,
+      is3D: false,
+      backgroundColor: 'transparent',
+      chartArea: {
+        left: 50,
+        top: 60,
+        width: "80%",
+        height: "70%"
+      },
+      legend: { position: 'right' }
+    };
+
+    const chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+    google.visualization.events.addListener(chart, 'select', function() {
+      const selectedItem = chart.getSelection()[0];
+      if (selectedItem) {
+        const subModuleName = data.getValue(selectedItem.row, 0);
+        currentSubModule = subModuleName;
+        drawLevel3(subModuleName);
+      }
+    });
+
+    chart.draw(data, options);
+  }
+
+  function drawLevel3(subModuleName) {
+    currentLevel = 3;
+    document.getElementById('backBtn').style.display = 'inline-block';
+
+    const epreuves = dataNiveau3[subModuleName];
+    if (!epreuves) return;
+
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'Épreuve');
+    data.addColumn('number', 'Coefficient (%)');
+    data.addRows(epreuves);
+
+    const options = {
+      title: subModuleName,
+      pieHole: 0,
+      is3D: false,
+      backgroundColor: 'transparent',
+      chartArea: {
+        left: 50,
+        top: 60,
+        width: "80%",
+        height: "70%"
+      },
+      legend: { position: 'right' }
+    };
+
+    const chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
+
+  // Bouton "Retour" : revenir au niveau précédent
+  function goBack() {
+    if (currentLevel === 3) {
+      drawLevel2(currentUEName);
+    } else if (currentLevel === 2) {
+      drawLevel1();
+    }
+  }
+</script>
+</body>
+</html>
