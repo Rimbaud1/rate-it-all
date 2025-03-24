@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rate It All - Admin</title>
+  <style>
+    /* ----------- RESET / BASE (identique à la page d'accueil) ----------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #ffffff;
+      color: #333;
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    ul {
+      list-style: none;
+    }
+
+    /* ----------- ANIMATIONS ----------- */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* ----------- HEADER & NAVBAR ----------- */
+    header {
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #5a5a5a;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+    }
+    .logo:hover {
+      color: #ff7f50;
+    }
+    .nav-links li {
+      display: inline-block;
+      margin-left: 1.5rem;
+    }
+    .nav-links a {
+      font-weight: 500;
+      color: #555;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: #ff7f50;
+    }
+
+    /* ----------- HERO SECTION (ADMIN) ----------- */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+      padding: 2.5rem 1.5rem 4rem 1.5rem;
+      text-align: center;
+      color: #fff;
+    }
+    .hero-content {
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeInUp 1.2s ease forwards;
+    }
+    .hero h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    /* Wave shape at bottom of hero */
+    .hero-wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+    }
+    .hero-wave svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ----------- MAIN CONTENT ----------- */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    /* ----------- ADMIN DASHBOARD SECTIONS ----------- */
+    .admin-section {
+      margin-bottom: 3rem;
+    }
+    .admin-title {
+      font-size: 1.8rem;
+      text-align: center;
+      margin: 2rem 0 1.5rem 0;
+      color: #444;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Stats box (similaire à stats-section) */
+    .admin-stats {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-around;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-box {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      text-align: center;
+      min-width: 120px;
+    }
+    .stat-box h3 {
+      font-size: 2rem;
+      color: #ff7f50;
+      margin-bottom: 0.3rem;
+    }
+    .stat-box p {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    /* Cards or forms for managing items, comments, modération, etc. */
+    .admin-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .admin-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0; /* Start hidden for fadeInUp */
+    }
+    .admin-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+    }
+    .admin-card h4 {
+      margin-bottom: 1rem;
+      color: #ff7f50;
+      font-size: 1.2rem;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    .admin-card p {
+      font-size: 0.95rem;
+      color: #555;
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+
+    /* Petits formulaires ou boutons */
+    .admin-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .admin-form label {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 0.2rem;
+    }
+    .admin-form input[type="text"] {
+      padding: 0.55rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .admin-form input[type="text"]:focus {
+      border-color: #ff7f50;
+    }
+    .admin-btn {
+      background-color: #ff7f50;
+      border: none;
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 0.4rem;
+      align-self: flex-start; 
+    }
+    .admin-btn:hover {
+      background-color: #ff6240;
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #777;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+      margin-top: 2rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none; /* ou burger menu */
+      }
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER & NAVBAR -->
+  <header>
+    <div class="navbar">
+      <div class="logo">Rate It All</div>
+      <ul class="nav-links">
+        <li><a href="#">Accueil</a></li>
+        <li><a href="#">Top Avis</a></li>
+        <li><a href="#">Nouveautés</a></li>
+        <li><a href="#">Mon Profil</a></li>
+        <li><a href="#">Connexion</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Administration</h1>
+      <p>Bienvenue sur le panneau de contrôle, cher Admin !</p>
+    </div>
+    <div class="hero-wave">
+      <!-- Wave SVG -->
+      <svg viewBox="0 0 500 80" preserveAspectRatio="none">
+        <path d="M0,30 C150,80 350,0 500,45 L500,0 L0,0 Z" 
+              style="fill:#ffffff;"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- STATS SECTION -->
+    <section class="admin-section">
+      <h2 class="admin-title">Statistiques Globales</h2>
+      <div class="admin-stats">
+        <div class="stat-box">
+          <h3>12 345</h3>
+          <p>Comptes inscrits</p>
+        </div>
+        <div class="stat-box">
+          <h3>47 890</h3>
+          <p>Avis publiés</p>
+        </div>
+        <div class="stat-box">
+          <h3>1 234</h3>
+          <p>Commentaires signalés</p>
+        </div>
+        <div class="stat-box">
+          <h3>89</h3>
+          <p>Utilisateurs bannis</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN ACTIONS (items, commentaires, modération, user info, etc.) -->
+    <section class="admin-section">
+      <h2 class="admin-title">Gestion & Modération</h2>
+      <div class="admin-cards">
+
+        <!-- Card : Supprimer un Item -->
+        <div class="admin-card">
+          <h4>Supprimer un Item</h4>
+          <p>
+            Supprimez un item (film, restaurant, etc.) en indiquant son ID. 
+            Attention, action irréversible !
+          </p>
+          <form class="admin-form" action="#" method="POST">
+            <label for="item-id">ID de l'item :</label>
+            <input type="text" id="item-id" name="item-id" placeholder="Ex: ITEM123" required>
+            <button class="admin-btn" type="submit">Supprimer</button>
+          </form>
+        </div>
+
+        <!-- Card : Supprimer un Commentaire -->
+        <div class="admin-card">
+          <h4>Supprimer un Commentaire</h4>
+          <p>
+            Retirez un commentaire inapproprié, ou déjà signalé. 
+            Veillez à bien confirmer l’ID.
+          </p>
+          <form class="admin-form" action="#" method="POST">
+            <label for="comment-id">ID du commentaire :</label>
+            <input type="text" id="comment-id" name="comment-id" placeholder="Ex: CMT456" required>
+            <button class="admin-btn" type="submit">Supprimer</button>
+          </form>
+        </div>
+
+        <!-- Card : Modération des Utilisateurs -->
+        <div class="admin-card">
+          <h4>Modération des Utilisateurs</h4>
+          <p>
+            Gérez l'accès des utilisateurs : bannissez ou restaurez 
+            un compte en indiquant son ID.
+          </p>
+          <form class="admin-form" action="#" method="POST">
+            <label for="user-id-ban">ID de l'utilisateur :</label>
+            <input type="text" id="user-id-ban" name="user-id-ban" placeholder="Ex: USR789" required>
+            <button class="admin-btn" type="submit">Bannir</button>
+          </form>
+        </div>
+
+        <!-- Card : Infos sur un utilisateur -->
+        <div class="admin-card">
+          <h4>Infos sur un Utilisateur</h4>
+          <p>
+            Obtenez un aperçu du profil d’un utilisateur : 
+            notes données, commentaires, date d’inscription, etc.
+          </p>
+          <!-- Redirection fictive vers admin-userview.html -->
+          <form class="admin-form" action="admin-userview.html" method="GET">
+            <label for="user-id-view">ID de l'utilisateur :</label>
+            <input type="text" id="user-id-view" name="userid" placeholder="Ex: USR321" required>
+            <button class="admin-btn" type="submit">Consulter</button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Rate It All. Tous droits réservés.</p>
+    <p>Interface d’administration fictive, uniquement à titre de démonstration.</p>
+  </footer>
+
+</body>
+</html>
