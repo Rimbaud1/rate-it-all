@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -5,127 +6,144 @@
   <title>CIR1 S2 – Visualisation & Calcul</title>
   <!-- Google Charts -->
   <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* ====== STYLE GLOBAL (Sobre) ====== */
-    html, body {
-      margin: 0; 
-      padding: 0;
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      background: #f5f5f5;
-      color: #333;
+    /* Custom styles */
+    .gradient-bg {
+      background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
     }
-    h1 {
-      text-align: center;
-      margin-top: 2rem;
-      margin-bottom: 1rem;
+    .chart-container {
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
-
-    /* Conteneur général */
-    #container {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 3rem;
+    .chart-container:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
-
-    /* Zone du camembert */
-    #chart_div {
-      width: 700px;
-      height: 500px;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      margin-top: 1rem;
-      padding-top: 1rem;
+    .input-radio-container:hover .radio-label {
+      color: #4f46e5;
     }
-
-    .button-container {
-      text-align: center;
-      margin: 0.5rem;
-    }
-    button {
-      padding: 0.5rem 1rem;
-      font-size: 0.9rem;
-      cursor: pointer;
-      background: #eee;
-      border: 1px solid #bbb;
-      border-radius: 4px;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background: #ddd;
-    }
-
-    /* Zone de formulaire (calcul) */
-    #calcZone {
-      width: 350px;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 1rem;
-      margin-top: 1rem;
-      align-self: flex-start;
-    }
-    #calcZone h2 {
-      margin-top: 0;
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    .note-row {
-      margin-bottom: 0.8rem;
-    }
-    .note-row label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.2rem;
-    }
-    .note-row input[type="number"] {
-      width: 80px;
-      padding: 0.3rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    .note-row input[type="radio"] {
-      margin-left: 10px;
-      transform: scale(1.2);
+    .radio-custom {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #d1d5db;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      position: relative;
       cursor: pointer;
     }
-    .calc-result {
-      margin-top: 1rem;
-      font-weight: 600;
+    .radio-custom:checked {
+      border-color: #4f46e5;
+      background-color: #4f46e5;
+    }
+    .radio-custom:checked::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 10px;
+      height: 10px;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .note-input {
+      transition: all 0.2s ease;
+      border: 1px solid #d1d5db;
+    }
+    .note-input:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    .btn-primary {
+      transition: all 0.2s ease;
+      background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .btn-secondary {
+      transition: all 0.2s ease;
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    }
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .result-box {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border-left: 4px solid #3b82f6;
     }
   </style>
 </head>
-<body>
-
-<h1>Pondérations CIR1 S2 : Camemberts & Calculateur</h1>
-
-<div id="container">
-  <!-- Zone Camembert -->
-  <div>
-    <div id="chart_div"></div>
-    <div class="button-container">
-      <button id="backBtn" style="display:none;" onclick="goBack()">Retour</button>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <header class="gradient-bg text-white py-6 shadow-lg">
+    <div class="container mx-auto px-4">
+      <h1 class="text-3xl font-bold text-center">
+        <i class="fas fa-chart-pie mr-2"></i> Pondérations CIR1 S2
+      </h1>
+      <p class="text-center text-blue-100 mt-2">
+        Visualisation interactive & calculateur de moyenne
+      </p>
     </div>
-  </div>
+  </header>
 
-  <!-- Zone Formulaire de calcul -->
-  <div id="calcZone">
-    <h2>Calculateur</h2>
-    <p style="font-size:0.9rem;">
-      Saisissez les notes déjà connues.  
-      Cochez la case <em>(?)</em> pour la note inconnue.  
-      Cliquez sur « Calculer » pour savoir combien il faut pour avoir 10 de moyenne.
-    </p>
-    <div id="notesForm"></div>
-    <button onclick="calculerMoyenne()">Calculer</button>
-    <div class="calc-result" id="calcResult"></div>
-  </div>
-</div>
+  <main class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Chart Section -->
+      <div class="flex-1">
+        <div class="bg-white rounded-xl p-6 chart-container">
+          <div id="chart_div" class="w-full h-[500px]"></div>
+        </div>
+        <div class="text-center mt-4">
+          <button id="backBtn" class="btn-secondary py-2 px-6 rounded-lg font-medium text-gray-700 hidden" onclick="goBack()">
+            <i class="fas fa-arrow-left mr-2"></i> Retour
+          </button>
+        </div>
+      </div>
+
+      <!-- Calculator Section -->
+      <div class="w-full lg:w-96">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div class="gradient-bg px-6 py-4">
+            <h2 class="text-xl font-bold text-white flex items-center">
+              <i class="fas fa-calculator mr-3"></i> Calculateur de moyenne
+            </h2>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-600 mb-6 text-sm">
+              Saisissez les notes déjà connues. Cochez la case pour la note inconnue. 
+              Cliquez sur « Calculer » pour savoir combien il faut pour avoir 10 de moyenne.
+            </p>
+            
+            <div id="notesForm" class="space-y-4 mb-6"></div>
+            
+            <button onclick="calculerMoyenne()" class="btn-primary w-full py-3 rounded-lg text-white font-medium">
+              <i class="fas fa-calculator mr-2"></i> Calculer
+            </button>
+            
+            <div id="calcResult" class="result-box p-4 mt-6 rounded-lg hidden">
+              <div class="flex items-start">
+                <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                <div id="resultContent"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-gray-100 py-6 mt-12">
+    <div class="container mx-auto px-4 text-center text-gray-600">
+      <p>© 2023 CIR1 S2 - Outil de visualisation des pondérations</p>
+    </div>
+  </footer>
 
 <script>
   // --------------------------------------------------------------------
@@ -253,25 +271,18 @@
     ]
   };
 
-  // Pour niveau 1, les coefficients sont les ECTS totaux :
-  // Maths(8), Physique/Elec(7), Info(7), Hum.(6), Projet(2).
-  // Si on veut calculer la "moyenne" sur 20, on pondère par ECTS.
-  // dataNiveau1 => on s'en servira pareil qu'un "tableau" de 5 notes.
+  // Variables d'état
+  let currentLevel = 1;
+  let currentUEName = "";
+  let currentSubModuleName = "";
 
   // --------------------------------------------------------------------
-  // 2) Variables d'état : (niveau + UE + sousModule)
-  // --------------------------------------------------------------------
-  let currentLevel = 1;          // 1 (UE), 2 (Modules), 3 (Epreuves)
-  let currentUEName = "";        // ex: "Maths (UE1.2.1)"
-  let currentSubModuleName = ""; // ex: "M3 : Arithmétique"
-
-  // --------------------------------------------------------------------
-  // 3) Fonctions de dessin des camemberts
+  // Fonctions de dessin des camemberts
   // --------------------------------------------------------------------
   function drawLevel1() {
     currentLevel = 1;
-    document.getElementById('backBtn').style.display = 'none';
-    renderCalcForm(); // rafraîchit le formulaire en fonction du niveau
+    document.getElementById('backBtn').classList.add('hidden');
+    renderCalcForm();
 
     const data = new google.visualization.DataTable();
     data.addColumn('string', 'UE');
@@ -287,7 +298,13 @@
         width: "80%",
         height: "70%"
       },
-      legend: { position: 'right' }
+      legend: { position: 'right' },
+      colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b'],
+      titleTextStyle: {
+        fontSize: 18,
+        bold: true,
+        color: '#374151'
+      }
     };
 
     const chart = new google.visualization.PieChart(document.getElementById('chart_div'));
@@ -304,10 +321,9 @@
 
   function drawLevel2(ueName) {
     currentLevel = 2;
-    document.getElementById('backBtn').style.display = 'inline-block';
+    document.getElementById('backBtn').classList.remove('hidden');
     renderCalcForm();
 
-    // Récupérer la liste des modules
     const ueObj = dataNiveau2.find(o => o.name === ueName);
     if (!ueObj) return;
 
@@ -325,7 +341,13 @@
         width: "80%",
         height: "70%"
       },
-      legend: { position: 'right' }
+      legend: { position: 'right' },
+      colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b'],
+      titleTextStyle: {
+        fontSize: 18,
+        bold: true,
+        color: '#374151'
+      }
     };
 
     const chart = new google.visualization.PieChart(document.getElementById('chart_div'));
@@ -342,10 +364,9 @@
 
   function drawLevel3(subModuleName) {
     currentLevel = 3;
-    document.getElementById('backBtn').style.display = 'inline-block';
+    document.getElementById('backBtn').classList.remove('hidden');
     renderCalcForm();
 
-    // Récupérer la liste d'épreuves
     const epreuves = dataNiveau3[subModuleName];
     if (!epreuves) return;
 
@@ -363,16 +384,20 @@
         width: "80%",
         height: "70%"
       },
-      legend: { position: 'right' }
+      legend: { position: 'right' },
+      colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b'],
+      titleTextStyle: {
+        fontSize: 18,
+        bold: true,
+        color: '#374151'
+      }
     };
 
     const chart = new google.visualization.PieChart(document.getElementById('chart_div'));
     chart.draw(data, options);
   }
 
-  // --------------------------------------------------------------------
   // Bouton "Retour"
-  // --------------------------------------------------------------------
   function goBack() {
     if (currentLevel === 3) {
       drawLevel2(currentUEName);
@@ -382,130 +407,177 @@
   }
 
   // --------------------------------------------------------------------
-  // 4) Génération du FORMULAIRE de notes, selon le niveau
+  // Génération du FORMULAIRE de notes
   // --------------------------------------------------------------------
   function renderCalcForm() {
     const formZone = document.getElementById('notesForm');
     formZone.innerHTML = '';
-    document.getElementById('calcResult').textContent = '';
+    document.getElementById('calcResult').classList.add('hidden');
 
     if (currentLevel === 1) {
-      // => 5 UEs
-      // On affiche 5 inputs, un par UE, pondérés par ECTS
-      const label = document.createElement('p');
-      label.textContent = "Notes des 5 UEs (chacune /20) :";
-      formZone.appendChild(label);
-
+      // Niveau 1: UEs
       dataNiveau1.forEach((row, idx) => {
         const ueName = row[0];
         const ueECTS = row[1];
-        // On crée un bloc
-        const div = document.createElement('div');
-        div.className = 'note-row';
-        const lab = document.createElement('label');
-        lab.textContent = ueName + ` (ECTS:${ueECTS}):`;
-        const inp = document.createElement('input');
-        inp.type = 'number';
-        inp.step = '0.1';
-        inp.min = '0';
-        inp.max = '20';
-        inp.id = `lvl1_input_${idx}`;
-
-        const rad = document.createElement('input');
-        rad.type = 'radio';
-        rad.name = 'unknownNote';
-        rad.value = idx;
         
-        div.appendChild(lab);
-        div.appendChild(inp);
-        div.appendChild(rad);
+        const div = document.createElement('div');
+        div.className = 'input-radio-container flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+        
+        const label = document.createElement('label');
+        label.className = 'radio-label text-sm font-medium text-gray-700 flex-1';
+        label.textContent = `${ueName} (ECTS: ${ueECTS})`;
+        
+        const inputContainer = document.createElement('div');
+        inputContainer.className = 'flex items-center space-x-3';
+        
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.step = '0.1';
+        input.min = '0';
+        input.max = '20';
+        input.id = `lvl1_input_${idx}`;
+        input.className = 'note-input w-20 px-3 py-2 rounded-md text-sm';
+        input.placeholder = '/20';
+        
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'unknownNote';
+        radio.value = idx;
+        radio.className = 'radio-custom';
+        radio.id = `lvl1_radio_${idx}`;
+        
+        const radioLabel = document.createElement('label');
+        radioLabel.htmlFor = `lvl1_radio_${idx}`;
+        radioLabel.className = 'text-xs text-gray-500 ml-1';
+        radioLabel.innerHTML = '<i class="fas fa-question-circle"></i>';
+        radioLabel.title = "Note inconnue";
+        
+        inputContainer.appendChild(input);
+        inputContainer.appendChild(radio);
+        inputContainer.appendChild(radioLabel);
+        
+        div.appendChild(label);
+        div.appendChild(inputContainer);
         formZone.appendChild(div);
       });
 
     } else if (currentLevel === 2) {
-      // => Modules de l'UE courante
+      // Niveau 2: Modules
       const ueObj = dataNiveau2.find(o => o.name === currentUEName);
       if (!ueObj) return;
-      const label = document.createElement('p');
-      label.textContent = `Notes des modules de ${currentUEName} (chacun /20) :`;
-      formZone.appendChild(label);
 
       ueObj.modules.forEach((m, idx) => {
         const moduleName = m[0];
         const modulePct = m[1];
+        
         const div = document.createElement('div');
-        div.className = 'note-row';
-        const lab = document.createElement('label');
-        lab.textContent = `${moduleName} (${modulePct}%) :`;
-        const inp = document.createElement('input');
-        inp.type = 'number';
-        inp.step = '0.1';
-        inp.min = '0';
-        inp.max = '20';
-        inp.id = `lvl2_input_${idx}`;
-
-        const rad = document.createElement('input');
-        rad.type = 'radio';
-        rad.name = 'unknownNote';
-        rad.value = idx;
-
-        div.appendChild(lab);
-        div.appendChild(inp);
-        div.appendChild(rad);
+        div.className = 'input-radio-container flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+        
+        const label = document.createElement('label');
+        label.className = 'radio-label text-sm font-medium text-gray-700 flex-1';
+        label.textContent = `${moduleName} (${modulePct}%)`;
+        
+        const inputContainer = document.createElement('div');
+        inputContainer.className = 'flex items-center space-x-3';
+        
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.step = '0.1';
+        input.min = '0';
+        input.max = '20';
+        input.id = `lvl2_input_${idx}`;
+        input.className = 'note-input w-20 px-3 py-2 rounded-md text-sm';
+        input.placeholder = '/20';
+        
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'unknownNote';
+        radio.value = idx;
+        radio.className = 'radio-custom';
+        radio.id = `lvl2_radio_${idx}`;
+        
+        const radioLabel = document.createElement('label');
+        radioLabel.htmlFor = `lvl2_radio_${idx}`;
+        radioLabel.className = 'text-xs text-gray-500 ml-1';
+        radioLabel.innerHTML = '<i class="fas fa-question-circle"></i>';
+        radioLabel.title = "Note inconnue";
+        
+        inputContainer.appendChild(input);
+        inputContainer.appendChild(radio);
+        inputContainer.appendChild(radioLabel);
+        
+        div.appendChild(label);
+        div.appendChild(inputContainer);
         formZone.appendChild(div);
       });
 
     } else if (currentLevel === 3) {
-      // => Épreuves du sous-module courant
+      // Niveau 3: Épreuves
       const epList = dataNiveau3[currentSubModuleName];
       if (!epList) return;
-      const label = document.createElement('p');
-      label.textContent = `Épreuves de ${currentSubModuleName} (chacune /20) :`;
-      formZone.appendChild(label);
 
       epList.forEach((ep, idx) => {
         const epName = ep[0];
         const epPct = ep[1];
+        
         const div = document.createElement('div');
-        div.className = 'note-row';
-        const lab = document.createElement('label');
-        lab.textContent = `${epName} (${epPct}%) :`;
-        const inp = document.createElement('input');
-        inp.type = 'number';
-        inp.step = '0.1';
-        inp.min = '0';
-        inp.max = '20';
-        inp.id = `lvl3_input_${idx}`;
-
-        const rad = document.createElement('input');
-        rad.type = 'radio';
-        rad.name = 'unknownNote';
-        rad.value = idx;
-
-        div.appendChild(lab);
-        div.appendChild(inp);
-        div.appendChild(rad);
+        div.className = 'input-radio-container flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+        
+        const label = document.createElement('label');
+        label.className = 'radio-label text-sm font-medium text-gray-700 flex-1';
+        label.textContent = `${epName} (${epPct}%)`;
+        
+        const inputContainer = document.createElement('div');
+        inputContainer.className = 'flex items-center space-x-3';
+        
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.step = '0.1';
+        input.min = '0';
+        input.max = '20';
+        input.id = `lvl3_input_${idx}`;
+        input.className = 'note-input w-20 px-3 py-2 rounded-md text-sm';
+        input.placeholder = '/20';
+        
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'unknownNote';
+        radio.value = idx;
+        radio.className = 'radio-custom';
+        radio.id = `lvl3_radio_${idx}`;
+        
+        const radioLabel = document.createElement('label');
+        radioLabel.htmlFor = `lvl3_radio_${idx}`;
+        radioLabel.className = 'text-xs text-gray-500 ml-1';
+        radioLabel.innerHTML = '<i class="fas fa-question-circle"></i>';
+        radioLabel.title = "Note inconnue";
+        
+        inputContainer.appendChild(input);
+        inputContainer.appendChild(radio);
+        inputContainer.appendChild(radioLabel);
+        
+        div.appendChild(label);
+        div.appendChild(inputContainer);
         formZone.appendChild(div);
       });
     }
   }
 
   // --------------------------------------------------------------------
-  // 5) Calcul de la note inconnue pour obtenir 10/20 de moyenne
+  // Calcul de la note inconnue pour obtenir 10/20 de moyenne
   // --------------------------------------------------------------------
   function calculerMoyenne() {
     const resultDiv = document.getElementById('calcResult');
-    resultDiv.textContent = '';
+    const resultContent = document.getElementById('resultContent');
+    resultDiv.classList.remove('hidden');
+    resultContent.innerHTML = '';
 
     if (currentLevel === 1) {
-      // On lit les 5 inputs => sum(ECTS/totalECTS * note)
-      // totalECTS = 8+7+7+6+2 = 30
       const totalECTS = dataNiveau1.reduce((acc, row) => acc + row[1], 0);
-
-      // Trouver la radio cochée
       const unknownIndex = getUnknownIndex(5);
       let sumKnown = 0;
       let knownECTSSum = 0;
+      
       dataNiveau1.forEach((row, idx) => {
         const ects = row[1];
         const val = parseFloat(document.getElementById(`lvl1_input_${idx}`).value);
@@ -514,50 +586,57 @@
           knownECTSSum += ects;
         }
       });
+      
       if (unknownIndex === -1) {
-        // Aucune note inconnue => on calcule la moyenne
         const finalMoy = sumKnown.toFixed(2);
-        resultDiv.textContent = `Moyenne globale = ${finalMoy}/20 (aucune inconnue)`;
+        resultContent.innerHTML = `
+          <p class="font-medium text-gray-800">Moyenne globale calculée</p>
+          <p class="text-lg text-blue-600 font-bold mt-1">${finalMoy}/20</p>
+          <p class="text-sm text-gray-600 mt-1">Aucune note inconnue sélectionnée</p>
+        `;
         return;
       }
-      // x => (ectsUnknown / totalECTS)*x
+      
       const ectsUnknown = dataNiveau1[unknownIndex][1];
       const needed = (10 - sumKnown) / (ectsUnknown / totalECTS);
-
-      showCalcResult(needed, dataNiveau1[unknownIndex][0], resultDiv);
+      showCalcResult(needed, dataNiveau1[unknownIndex][0], resultContent);
 
     } else if (currentLevel === 2) {
-      // Modules de currentUE
       const ueObj = dataNiveau2.find(o => o.name === currentUEName);
       if (!ueObj) return;
-      const modules = ueObj.modules; // [ [modName, pct], ... ]
+      
+      const modules = ueObj.modules;
       const unknownIndex = getUnknownIndex(modules.length);
       let sumKnown = 0;
       let knownPct = 0;
 
       modules.forEach((m, idx) => {
-        const modPct = m[1]; // ex. 35
+        const modPct = m[1];
         const val = parseFloat(document.getElementById(`lvl2_input_${idx}`).value);
         if (idx !== unknownIndex && !isNaN(val)) {
-          // pondération = modPct/100
           sumKnown += (modPct / 100) * val;
           knownPct += (modPct / 100);
         }
       });
+      
       if (unknownIndex === -1) {
         const finalMoy = sumKnown.toFixed(2);
-        resultDiv.textContent = `Moyenne du bloc "${currentUEName}" = ${finalMoy}/20 (aucune inconnue)`;
+        resultContent.innerHTML = `
+          <p class="font-medium text-gray-800">Moyenne du bloc "${currentUEName}"</p>
+          <p class="text-lg text-blue-600 font-bold mt-1">${finalMoy}/20</p>
+          <p class="text-sm text-gray-600 mt-1">Aucune note inconnue sélectionnée</p>
+        `;
         return;
       }
-      const unknownPct = modules[unknownIndex][1]; // ex. 35
+      
+      const unknownPct = modules[unknownIndex][1];
       const needed = (10 - sumKnown) / (unknownPct / 100);
-
-      showCalcResult(needed, modules[unknownIndex][0], resultDiv);
+      showCalcResult(needed, modules[unknownIndex][0], resultContent);
 
     } else if (currentLevel === 3) {
-      // Epreuves de currentSubModule
       const epList = dataNiveau3[currentSubModuleName];
       if (!epList) return;
+      
       const unknownIndex = getUnknownIndex(epList.length);
       let sumKnown = 0;
       let knownPct = 0;
@@ -573,17 +652,20 @@
 
       if (unknownIndex === -1) {
         const finalMoy = sumKnown.toFixed(2);
-        resultDiv.textContent = `Moyenne pour "${currentSubModuleName}" = ${finalMoy}/20 (aucune inconnue)`;
+        resultContent.innerHTML = `
+          <p class="font-medium text-gray-800">Moyenne pour "${currentSubModuleName}"</p>
+          <p class="text-lg text-blue-600 font-bold mt-1">${finalMoy}/20</p>
+          <p class="text-sm text-gray-600 mt-1">Aucune note inconnue sélectionnée</p>
+        `;
         return;
       }
+      
       const unknownPct = epList[unknownIndex][1];
       const needed = (10 - sumKnown) / (unknownPct / 100);
-
-      showCalcResult(needed, epList[unknownIndex][0], resultDiv);
+      showCalcResult(needed, epList[unknownIndex][0], resultContent);
     }
   }
 
-  // Renvoie l'index de la note "inconnue" ou -1 si aucune sélectionnée
   function getUnknownIndex(count) {
     const radios = document.getElementsByName('unknownNote');
     let idx = -1;
@@ -597,21 +679,73 @@
     return idx;
   }
 
-  // Affiche un message standard pour la note "needed"
   function showCalcResult(needed, label, resultDiv) {
     if (isNaN(needed)) {
-      resultDiv.textContent = "Impossible de calculer – vérifiez vos valeurs";
+      resultDiv.innerHTML = `
+        <p class="font-medium text-red-600">Erreur de calcul</p>
+        <p class="text-sm text-gray-600 mt-1">Veuillez vérifier les valeurs saisies</p>
+      `;
       return;
     }
+    
     if (needed < 0) {
-      resultDiv.textContent = `Avec vos notes connues, vous avez déjà ≥10 de moyenne ! (résultat calc. = ${needed.toFixed(2)})`;
+      resultDiv.innerHTML = `
+        <p class="font-medium text-green-600">Vous avez déjà la moyenne !</p>
+        <p class="text-sm text-gray-600 mt-1">Avec vos notes actuelles, vous avez déjà ≥10/20</p>
+        <p class="text-xs text-gray-500 mt-2">(Le calcul donne ${needed.toFixed(2)}/20 en "${label}")</p>
+      `;
     } else if (needed > 20) {
-      resultDiv.textContent = `Il faudrait >20 (${needed.toFixed(2)}/20) en « ${label} » pour atteindre 10 de moyenne…`;
+      resultDiv.innerHTML = `
+        <p class="font-medium text-red-600">Objectif inatteignable</p>
+        <p class="text-sm text-gray-600 mt-1">Il faudrait ${needed.toFixed(2)}/20 en "${label}"</p>
+        <p class="text-xs text-gray-500 mt-2">(Ce qui est impossible car la note est limitée à 20)</p>
+      `;
     } else {
-      resultDiv.textContent = `Il vous faut ${needed.toFixed(2)}/20 en « ${label} » pour obtenir 10 de moyenne.`;
+      resultDiv.innerHTML = `
+        <p class="font-medium text-blue-600">Note nécessaire pour avoir 10/20</p>
+        <p class="text-lg font-bold text-gray-800 mt-1">${needed.toFixed(2)}/20</p>
+        <p class="text-sm text-gray-600 mt-1">en "${label}"</p>
+      `;
     }
   }
-
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
 </script>
 </body>
 </html>
